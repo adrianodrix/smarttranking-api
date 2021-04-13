@@ -1,21 +1,27 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 import { I18nService } from 'nestjs-i18n';
-import { v4 as uuidv4 } from 'uuid';
 import { CreatePlayerDTO } from './dto/create-player.dto';
 import { IPlayer } from './interfaces/player.interface';
+import { PlayerModel, PlayerDocument } from './models/player.schema';
 
 @Injectable()
 export class PlayersService {
   private readonly logger = new Logger(PlayersService.name);
-  private players: IPlayer[] = [];
 
-  constructor(private readonly i18n: I18nService) {}
+  constructor(
+    @InjectModel(PlayerModel.name)
+    private readonly playerModel: Model<PlayerDocument>,
+    private readonly i18n: I18nService,
+  ) {}
 
   async createOrUpdate(createPlayerDTO: CreatePlayerDTO): Promise<void> {
     const { email } = createPlayerDTO;
-    const playerFound = await this.players.find(
-      (player) => player.email === email.toLocaleLowerCase(),
-    );
+    const playerFound = await this.playerModel
+      .findOne({ email: email.toLocaleLowerCase() })
+      .exec();
+
     if (playerFound) {
       await this.update(playerFound, createPlayerDTO);
       return;
@@ -26,18 +32,19 @@ export class PlayersService {
   }
 
   async findAll(): Promise<IPlayer[]> {
-    if (this.players.length === 0) {
+    const players = await this.playerModel.find().exec();
+    if (players.length === 0) {
       throw new NotFoundException(
         await this.i18n.translate('player.emptyList'),
       );
     }
-    return Promise.resolve(this.players);
+    return Promise.resolve(players);
   }
 
   async findByEmail(email: string): Promise<IPlayer> {
-    const playerFound = await this.players.find(
-      (player) => player.email === email.toLocaleLowerCase(),
-    );
+    const playerFound = await this.playerModel
+      .findOne({ email: email.toLocaleLowerCase() })
+      .exec();
     if (!playerFound) {
       throw new NotFoundException(
         await this.i18n.translate('player.notFound', {
@@ -45,7 +52,6 @@ export class PlayersService {
         }),
       );
     }
-
     return Promise.resolve(playerFound);
   }
 
@@ -57,7 +63,6 @@ export class PlayersService {
     const { email, ...rest } = createPlayerDTO;
 
     const player: IPlayer = {
-      _id: uuidv4(),
       email: email.toLocaleLowerCase(),
       ...rest,
       ranking: 'A',
@@ -66,25 +71,23 @@ export class PlayersService {
     };
     this.logger.log(`create: ${JSON.stringify(player)}`);
 
-    this.players.push(player);
+    await this.playerModel.create(player);
   }
 
   private async update(
-    playerFound: IPlayer,
+    playerFound: PlayerDocument,
     createPlayerDTO: CreatePlayerDTO,
   ): Promise<void> {
     this.logger.log(`update: ${JSON.stringify(createPlayerDTO)}`);
 
     const { name } = createPlayerDTO;
     playerFound.name = name;
+    await playerFound.save();
   }
 
   private async delete(playerFound: IPlayer): Promise<void> {
     this.logger.log(`delete: ${JSON.stringify(playerFound)}`);
 
-    this.players = this.players.filter(
-      (player) => player.email !== playerFound.email,
-    );
-    return;
+    await this.playerModel.deleteOne({ email: playerFound.email }).exec();
   }
 }
