@@ -1,38 +1,82 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { I18nService } from 'nestjs-i18n';
 import { CreatePlayerDTO } from './dto/create-player.dto';
+import { UpdatePlayerDTO } from './dto/update-player.dto';
 import { IPlayer } from './interfaces/player.interface';
-import { PlayerModel, PlayerDocument } from './models/player.schema';
+import { Player, PlayerDocument } from './models/player.schema';
 
 @Injectable()
 export class PlayersService {
   private readonly logger = new Logger(PlayersService.name);
 
   constructor(
-    @InjectModel(PlayerModel.name)
+    @InjectModel(Player.name)
     private readonly playerModel: Model<PlayerDocument>,
     private readonly i18n: I18nService,
   ) {}
 
-  async createOrUpdate(createPlayerDTO: CreatePlayerDTO): Promise<void> {
-    const { email } = createPlayerDTO;
-    const playerFound = await this.playerModel
-      .findOne({ email: email.toLocaleLowerCase() })
-      .exec();
+  async create(createPlayerDTO: CreatePlayerDTO): Promise<IPlayer> {
+    this.logger.log(`create: ${JSON.stringify(createPlayerDTO)}`);
 
-    if (playerFound) {
-      await this.update(playerFound, createPlayerDTO);
-      return;
+    const { email, phoneNumber, ...rest } = createPlayerDTO;
+
+    const playerExists =
+      (await this.playerModel
+        .findOne({
+          email: email.toLocaleLowerCase(),
+        })
+        .exec()) ?? (await this.playerModel.findOne({ phoneNumber }).exec());
+    if (playerExists) {
+      throw new BadRequestException(
+        await this.i18n.translate('player.exists', {
+          args: { player: `${email} | ${phoneNumber}` },
+        }),
+      );
     }
 
-    await this.create(createPlayerDTO);
-    return;
+    const player: IPlayer = {
+      email: email.toLocaleLowerCase(),
+      phoneNumber,
+      ...rest,
+      ranking: 'A',
+      positionRanking: 1,
+      urlAvatar: 'https://i.pravatar.cc/300',
+    };
+
+    return await this.playerModel.create(player);
+  }
+
+  async update(id: string, updatePlayerDTO: UpdatePlayerDTO): Promise<IPlayer> {
+    this.logger.log(`update: ${JSON.stringify(updatePlayerDTO)}`);
+
+    const playerFound = await this.findById(id);
+    return await this.playerModel
+      .findOneAndUpdate(
+        { _id: playerFound.id },
+        { $set: updatePlayerDTO },
+        { returnOriginal: false },
+      )
+      .exec();
+  }
+
+  async delete(id: string): Promise<void> {
+    this.logger.log(`delete: ${id}`);
+
+    const playerFound = await this.findById(id);
+    await this.playerModel.deleteOne({ _id: playerFound._id }).exec();
   }
 
   async findAll(): Promise<IPlayer[]> {
-    const players = await this.playerModel.find().exec();
+    this.logger.log('findAll');
+
+    const players = await this.playerModel.find().lean();
     if (players.length === 0) {
       throw new NotFoundException(
         await this.i18n.translate('player.emptyList'),
@@ -41,9 +85,13 @@ export class PlayersService {
     return Promise.resolve(players);
   }
 
-  async findByEmail(email: string): Promise<IPlayer> {
+  async findByEmail(email: string): Promise<PlayerDocument> {
+    this.logger.log(`findByEmail: ${email}`);
+
     const playerFound = await this.playerModel
-      .findOne({ email: email.toLocaleLowerCase() })
+      .findOne({
+        email: email.toLocaleLowerCase(),
+      })
       .exec();
     if (!playerFound) {
       throw new NotFoundException(
@@ -55,39 +103,17 @@ export class PlayersService {
     return Promise.resolve(playerFound);
   }
 
-  async deleteByEmail(email: string): Promise<void> {
-    return this.delete(await this.findByEmail(email));
-  }
+  async findById(id: string): Promise<PlayerDocument> {
+    this.logger.log(`findById: ${id}`);
 
-  private async create(createPlayerDTO: CreatePlayerDTO): Promise<void> {
-    const { email, ...rest } = createPlayerDTO;
-
-    const player: IPlayer = {
-      email: email.toLocaleLowerCase(),
-      ...rest,
-      ranking: 'A',
-      positionRanking: 1,
-      urlAvatar: 'https://i.pravatar.cc/300',
-    };
-    this.logger.log(`create: ${JSON.stringify(player)}`);
-
-    await this.playerModel.create(player);
-  }
-
-  private async update(
-    playerFound: PlayerDocument,
-    createPlayerDTO: CreatePlayerDTO,
-  ): Promise<void> {
-    this.logger.log(`update: ${JSON.stringify(createPlayerDTO)}`);
-
-    const { name } = createPlayerDTO;
-    playerFound.name = name;
-    await playerFound.save();
-  }
-
-  private async delete(playerFound: IPlayer): Promise<void> {
-    this.logger.log(`delete: ${JSON.stringify(playerFound)}`);
-
-    await this.playerModel.deleteOne({ email: playerFound.email }).exec();
+    const playerFound = await this.playerModel.findById(id).exec();
+    if (!playerFound) {
+      throw new NotFoundException(
+        await this.i18n.translate('player.notFound', {
+          args: { player: id },
+        }),
+      );
+    }
+    return Promise.resolve(playerFound);
   }
 }

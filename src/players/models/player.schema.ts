@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
 @Schema({ timestamps: true })
-export class PlayerModel {
+export class Player {
   @Prop({ required: true, unique: true })
   phoneNumber: string;
 
@@ -22,5 +22,5 @@ export class PlayerModel {
   urlAvatar: string;
 }
 
-export type PlayerDocument = PlayerModel & Document;
-export const PlayerSchema = SchemaFactory.createForClass(PlayerModel);
+export type PlayerDocument = Player & Document;
+export const PlayerSchema = SchemaFactory.createForClass(Player);

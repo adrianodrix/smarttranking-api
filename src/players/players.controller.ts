@@ -1,27 +1,61 @@
-import { Body, Controller, Delete, Get, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  UsePipes,
+} from '@nestjs/common';
 import { CreatePlayerDTO } from './dto/create-player.dto';
+import { UpdatePlayerDTO } from './dto/update-player.dto';
 import { IPlayer } from './interfaces/player.interface';
+import { PlayerValidationParamsPipe } from './pipes/player-validation-params.pipe';
+import { IdValidationParamsPipe } from './pipes/id-validation-params.pipe';
 import { PlayersService } from './players.service';
+import { ValidationBodyPipe } from './pipes/validation-body.pipe';
 
 @Controller('api/v1/players')
 export class PlayersController {
   constructor(private readonly playerService: PlayersService) {}
 
   @Post()
-  async createOrUpdate(@Body() createPlayerDTO: CreatePlayerDTO) {
-    await this.playerService.createOrUpdate(createPlayerDTO);
+  @UsePipes(ValidationBodyPipe)
+  async create(@Body() createPlayerDTO: CreatePlayerDTO): Promise<IPlayer> {
+    return await this.playerService.create(createPlayerDTO);
+  }
+
+  @Put(':id')
+  @UsePipes(ValidationBodyPipe)
+  async update(
+    @Param('id', IdValidationParamsPipe) id: string,
+    @Body() updatePlayerDTO: UpdatePlayerDTO,
+  ): Promise<IPlayer> {
+    return await this.playerService.update(id, updatePlayerDTO);
   }
 
   @Get()
-  async find(@Query('email') email: string): Promise<IPlayer | IPlayer[]> {
-    if (email) {
-      return await this.playerService.findByEmail(email);
-    }
+  async findAll(): Promise<IPlayer[]> {
     return await this.playerService.findAll();
   }
 
-  @Delete()
-  async delete(@Query('email') email: string): Promise<void> {
-    return await this.playerService.deleteByEmail(email);
+  @Get('email/:email')
+  async findByEmail(
+    @Param('email', PlayerValidationParamsPipe) email: string,
+  ): Promise<IPlayer> {
+    return await this.playerService.findByEmail(email);
+  }
+
+  @Get(':id')
+  async findById(
+    @Param('id', IdValidationParamsPipe) id: string,
+  ): Promise<IPlayer> {
+    return await this.playerService.findById(id);
+  }
+
+  @Delete(':id')
+  async delete(@Param('id', IdValidationParamsPipe) id: string): Promise<void> {
+    return await this.playerService.delete(id);
   }
 }

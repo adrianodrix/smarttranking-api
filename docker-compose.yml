@@ -16,6 +16,8 @@ services:
   db:
     image: mongo:4.4.4
     restart: always
+    ports:
+      - 27017:27017
     volumes:
       - ./.docker/dbdata:/data/db
     environment:
