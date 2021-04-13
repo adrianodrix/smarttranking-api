@@ -1,0 +1,4 @@
+{
+  "notFound": "Jogador {player} não pode ser encontrado",
+  "emptyList": "Lista de jogadores esta vazia"
+}
