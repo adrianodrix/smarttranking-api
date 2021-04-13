@@ -114,4 +114,8 @@ export class PlayersService {
     }
     return Promise.resolve(playerFound);
   }
+
+  async findByListIds(ids: string[]) {
+    return await this.playerModel.where('_id').in(ids).exec();
+  }
 }
