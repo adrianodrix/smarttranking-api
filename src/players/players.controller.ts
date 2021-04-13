@@ -10,7 +10,7 @@ import {
 import { CreatePlayerDTO } from './dto/create-player.dto';
 import { UpdatePlayerDTO } from './dto/update-player.dto';
 import { IPlayer } from './interfaces/player.interface';
-import { PlayerValidationParamsPipe } from './pipes/player-validation-params.pipe';
+import { ValidationParamsPipe } from '../common/pipes/validation-params.pipe';
 import { IdValidationParamsPipe } from '../common/pipes/id-validation-params.pipe';
 import { PlayersService } from './players.service';
 
@@ -38,7 +38,7 @@ export class PlayersController {
 
   @Get('email/:email')
   async findByEmail(
-    @Param('email', PlayerValidationParamsPipe) email: string,
+    @Param('email', ValidationParamsPipe) email: string,
   ): Promise<IPlayer> {
     return await this.playerService.findByEmail(email);
   }

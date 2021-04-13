@@ -8,8 +8,8 @@ import {
 import { I18nService } from 'nestjs-i18n';
 
 @Injectable()
-export class PlayerValidationParamsPipe implements PipeTransform {
-  private readonly logger = new Logger(PlayerValidationParamsPipe.name);
+export class ValidationParamsPipe implements PipeTransform {
+  private readonly logger = new Logger(ValidationParamsPipe.name);
 
   constructor(private readonly i18n: I18nService) {}
 
