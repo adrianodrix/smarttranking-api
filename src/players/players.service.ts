@@ -35,7 +35,7 @@ export class PlayersService {
         .exec()) ?? (await this.playerModel.findOne({ phoneNumber }).exec());
     if (playerExists) {
       throw new BadRequestException(
-        await this.i18n.translate('player.exists', {
+        await this.i18n.t('players.exists', {
           args: { player: `${email} | ${phoneNumber}` },
         }),
       );
@@ -78,9 +78,7 @@ export class PlayersService {
 
     const players = await this.playerModel.find().lean();
     if (players.length === 0) {
-      throw new NotFoundException(
-        await this.i18n.translate('player.emptyList'),
-      );
+      throw new NotFoundException(await this.i18n.t('default.emptyList'));
     }
     return Promise.resolve(players);
   }
@@ -95,7 +93,7 @@ export class PlayersService {
       .exec();
     if (!playerFound) {
       throw new NotFoundException(
-        await this.i18n.translate('player.notFound', {
+        await this.i18n.t('players.notFound', {
           args: { player: email },
         }),
       );
@@ -109,7 +107,7 @@ export class PlayersService {
     const playerFound = await this.playerModel.findById(id).exec();
     if (!playerFound) {
       throw new NotFoundException(
-        await this.i18n.translate('player.notFound', {
+        await this.i18n.t('players.notFound', {
           args: { player: id },
         }),
       );

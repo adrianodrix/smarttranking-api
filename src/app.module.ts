@@ -4,6 +4,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { I18nModule, I18nJsonParser } from 'nestjs-i18n';
 import { join } from 'path';
 import { PlayersModule } from './players/players.module';
+import { CategoriesModule } from './categories/categories.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { PlayersModule } from './players/players.module';
       },
     }),
     PlayersModule,
+    CategoriesModule,
   ],
 })
 export class AppModule {}

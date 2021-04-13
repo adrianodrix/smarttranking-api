@@ -21,12 +21,12 @@ export class IdValidationParamsPipe implements PipeTransform {
 
     if (!value) {
       throw new BadRequestException(
-        await this.i18n.t('player.valueShouldNotBeEmpty', { args: { data } }),
+        await this.i18n.t('default.valueShouldNotBeEmpty', { args: { data } }),
       );
     }
 
     if (!isValidObjectId(value)) {
-      throw new BadRequestException(await this.i18n.t('player.idIsInvalid'));
+      throw new BadRequestException(await this.i18n.t('default.idIsInvalid'));
     }
 
     return value;

@@ -4,30 +4,26 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
-  Put,
-  UsePipes,
 } from '@nestjs/common';
 import { CreatePlayerDTO } from './dto/create-player.dto';
 import { UpdatePlayerDTO } from './dto/update-player.dto';
 import { IPlayer } from './interfaces/player.interface';
 import { PlayerValidationParamsPipe } from './pipes/player-validation-params.pipe';
-import { IdValidationParamsPipe } from './pipes/id-validation-params.pipe';
+import { IdValidationParamsPipe } from '../common/pipes/id-validation-params.pipe';
 import { PlayersService } from './players.service';
-import { ValidationBodyPipe } from './pipes/validation-body.pipe';
 
 @Controller('api/v1/players')
 export class PlayersController {
   constructor(private readonly playerService: PlayersService) {}
 
   @Post()
-  @UsePipes(ValidationBodyPipe)
   async create(@Body() createPlayerDTO: CreatePlayerDTO): Promise<IPlayer> {
     return await this.playerService.create(createPlayerDTO);
   }
 
-  @Put(':id')
-  @UsePipes(ValidationBodyPipe)
+  @Patch(':id')
   async update(
     @Param('id', IdValidationParamsPipe) id: string,
     @Body() updatePlayerDTO: UpdatePlayerDTO,

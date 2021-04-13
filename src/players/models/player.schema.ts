@@ -1,8 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { IPlayer } from '../interfaces/player.interface';
 
 @Schema({ timestamps: true })
-export class Player {
+export class Player implements IPlayer {
   @Prop({ required: true, unique: true })
   phoneNumber: string;
 

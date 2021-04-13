@@ -1,7 +1,0 @@
-{
-  "notFound": "Jogador {player} não pode ser encontrado",
-  "exists": "Jogador {player} já cadastrado",
-  "emptyList": "Lista de jogadores esta vazia",
-  "valueShouldNotBeEmpty": "o valor de {data} deve ser informado",
-  "idIsInvalid": "Código de identificação é inválido"
-}
