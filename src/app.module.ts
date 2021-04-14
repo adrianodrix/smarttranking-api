@@ -20,7 +20,7 @@ import { ChallengesModule } from './challenges/challenges.module';
       fallbackLanguage: 'ptbr',
       parser: I18nJsonParser,
       parserOptions: {
-        path: join(__dirname, '/i18n/'),
+        path: join(__dirname, '/common/i18n/'),
       },
     }),
     PlayersModule,
