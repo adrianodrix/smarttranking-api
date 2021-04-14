@@ -139,6 +139,7 @@ export class ChallengesService {
         `O jogador vencedor não faz parte do desafio!`,
       );
     }
+    const oldMatch = challengeFound.match ?? challengeFound.match;
 
     const newMatch = new this.matchModel(attachMatchChallengeDto);
     newMatch.category = challengeFound.category;
@@ -151,6 +152,10 @@ export class ChallengesService {
       await this.model
         .findOneAndUpdate({ _id }, { $set: challengeFound })
         .exec();
+
+      if (oldMatch) {
+        this.matchModel.deleteOne({ _id: oldMatch.id }).exec();
+      }
     } catch (error) {
       this.logger.error(JSON.stringify(error));
       await this.matchModel.deleteOne({ _id: resultMatch.id }).exec();

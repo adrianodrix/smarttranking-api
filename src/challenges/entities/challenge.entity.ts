@@ -3,7 +3,7 @@ import * as mongoose from 'mongoose';
 import { IPlayer } from 'src/players/interfaces/player.interface';
 import { ChallengeStatus } from '../interfaces/challenge-status.enum';
 import { IChallenge } from '../interfaces/challenge.interface';
-import { IMatch } from '../interfaces/match-interface';
+import { MatchDocument } from './match.entity';
 
 @Schema({ timestamps: true })
 export class Challenge implements IChallenge {
@@ -37,7 +37,7 @@ export class Challenge implements IChallenge {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Match',
   })
-  match: IMatch;
+  match: MatchDocument;
 }
 
 export type ChallengeDocument = Challenge & mongoose.Document;
