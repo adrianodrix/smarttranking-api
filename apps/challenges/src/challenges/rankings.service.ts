@@ -1,9 +1,9 @@
 import { ClientProxySmartRanking } from '@lib/common/proxymq/client-proxy';
+import { RankingsEvents } from '@lib/models/events/rankings-events.enum';
+import { IMatch } from '@lib/models/interfaces/match-interface';
 import { Injectable, Logger } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { I18nService } from 'nestjs-i18n';
-import { MatchEvents } from './interfaces/events/category-events.enum';
-import { IMatch } from './interfaces/match-interface';
 
 @Injectable()
 export class RankingsService {
@@ -18,6 +18,8 @@ export class RankingsService {
   }
 
   async processMatch(match: IMatch) {
-    this.client.emit(MatchEvents.PROCESS, { match });
+    const { _id: idMatch } = match;
+
+    this.client.emit(RankingsEvents.PROCESS, { idMatch, match });
   }
 }

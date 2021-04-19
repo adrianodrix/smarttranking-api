@@ -27,3 +27,11 @@ services:
     command: bash -c "npm i -g @nestjs/cli &&  yarn install && yarn start challenges  --watch"
     volumes:
       - ./:/usr/src/challenges/
+  rankings:
+    container_name: micro-rankings
+    image: node:15
+    working_dir: /usr/src/rankings
+    restart: always
+    command: bash -c "npm i -g @nestjs/cli &&  yarn install && yarn start rankings  --watch"
+    volumes:
+      - ./:/usr/src/rankings/

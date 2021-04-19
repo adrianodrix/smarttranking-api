@@ -1,7 +1,7 @@
+import { IMatch } from '@lib/models/interfaces/match-interface';
+import { IResult } from '@lib/models/interfaces/result-interface';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import * as mongoose from 'mongoose';
-import { IMatch } from '../interfaces/match-interface';
-import { IResult } from '../interfaces/result-interface';
 
 @Schema({ timestamps: true })
 export class Match implements IMatch {

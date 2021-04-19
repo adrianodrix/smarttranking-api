@@ -1,5 +1,4 @@
 import { NestFactory } from '@nestjs/core';
-import * as momentTimeZone from 'moment-timezone';
 import { AppModule } from './app.module';
 import { AllExceptionFilter } from '../../../libs/common/src/filters/all-exception.filter';
 import { LoggingInterceptor } from '@lib/common/interceptors/logging.interceptor';
@@ -16,20 +15,9 @@ async function bootstrap() {
   app.useGlobalFilters(new AllExceptionFilter());
   app.useGlobalPipes(new ValidationBodyPipe());
 
-  init();
-
   await app.listen(8080, () => {
-    logger.log('Server initialized');
+    logger.log("Server 'API GATEWAY' initialized");
   });
-}
-
-function init() {
-  logger.log('Prototypes initialized');
-  Date.prototype.toJSON = function (): any {
-    return momentTimeZone(this)
-      .tz('America/Sao_Paulo')
-      .format('YYYY-MM-DD HH:mm:ss.SSS');
-  };
 }
 
 bootstrap();

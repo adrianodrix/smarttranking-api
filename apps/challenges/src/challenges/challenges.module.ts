@@ -10,11 +10,11 @@ import { ProxymqModule } from '@lib/common/proxymq/proxymq.module';
 
 @Module({
   imports: [
+    ProxymqModule,
     MongooseModule.forFeature([
       { name: Challenge.name, schema: ChallengeSchema },
       { name: Match.name, schema: MatchSchema },
     ]),
-    ProxymqModule,
   ],
   controllers: [ChallengesController],
   providers: [ChallengesService, PlayersService, RankingsService],

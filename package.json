@@ -88,7 +88,9 @@
     ],
     "moduleNameMapper": {
       "@common/common/(.*)": "<rootDir>/libs/common/src/$1",
-      "@common/common": "<rootDir>/libs/common/src"
+      "@common/common": "<rootDir>/libs/common/src",
+      "@models/models/(.*)": "<rootDir>/libs/models/src/$1",
+      "@models/models": "<rootDir>/libs/models/src"
     }
   }
 }

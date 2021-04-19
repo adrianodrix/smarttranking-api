@@ -35,7 +35,7 @@ export class Challenge implements IChallenge {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Match',
   })
-  match: MatchDocument;
+  match: string;
 }
 
 export type ChallengeDocument = Challenge & mongoose.Document;

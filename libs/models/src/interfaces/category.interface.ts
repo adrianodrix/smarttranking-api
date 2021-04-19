@@ -1,6 +1,7 @@
-import { IPlayer } from '../../players/interfaces/player.interface';
+import { IPlayer } from '@lib/models/interfaces/player.interface';
 
-export interface ICategory {
+export interface ICategory<T = any> {
+  _id?: T;
   readonly category: string;
   description: string;
   events: IEvent[];

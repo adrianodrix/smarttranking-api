@@ -3,10 +3,10 @@ import { InjectModel } from '@nestjs/mongoose';
 import { isValidObjectId, Model } from 'mongoose';
 import { I18nService } from 'nestjs-i18n';
 import { Category, CategoryDocument } from './entities/category.entity';
-import { DuplicateKeyError } from '../../../../libs/common/src/errors/DuplicateKeyError.error';
-import { NotFoundError } from '../../../../libs/common/src/errors/not-found.error';
-import { ICategory } from './interfaces/category.interface';
 import { PlayersService } from '../players/players.service';
+import { ICategory } from '@lib/models/interfaces/category.interface';
+import { DuplicateKeyError } from '@lib/common/errors/DuplicateKeyError.error';
+import { NotFoundError } from '@lib/common/errors/not-found.error';
 
 @Injectable()
 export class CategoriesService {

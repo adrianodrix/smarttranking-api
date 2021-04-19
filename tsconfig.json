@@ -17,6 +17,12 @@
       ],
       "@lib/common/*": [
         "libs/common/src/*"
+      ],
+      "@lib/models": [
+        "libs/models/src"
+      ],
+      "@lib/models/*": [
+        "libs/models/src/*"
       ]
     }
   }

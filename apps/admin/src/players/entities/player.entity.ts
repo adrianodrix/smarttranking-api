@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import * as mongoose from 'mongoose';
-import { IPlayer } from '../interfaces/player.interface';
+import { IPlayer } from '@lib/models/interfaces/player.interface';
 import { Category } from '../../categories/entities/category.entity';
 
 @Schema({ timestamps: true })

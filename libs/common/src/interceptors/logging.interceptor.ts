@@ -24,13 +24,13 @@ export class LoggingInterceptor implements NestInterceptor {
     this.logger.log(
       `${requestedUrl} (${userAgent}): ${this.dateToString(now)}`,
     );
-    return next
-      .handle()
-      .pipe(
-        tap(() =>
-          this.logger.log(`Duration request: ${(Date.now() - now) / 1000}s`),
-        ),
-      );
+    return next.handle().pipe(tap(() => this.logDurationRequest(now, context)));
+  }
+
+  private logDurationRequest(now: number, context: ExecutionContext) {
+    const statusCode: number = context.switchToHttp().getResponse().statusCode;
+    const timeSs = (Date.now() - now) / 1000;
+    this.logger.log(`Duration request (${statusCode}): ${timeSs}s`);
   }
 
   private dateToString(value: number) {

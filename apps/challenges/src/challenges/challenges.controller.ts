@@ -1,7 +1,9 @@
 import { BadRequestError } from '@lib/common/errors/bad-request.error';
 import { DuplicateKeyError } from '@lib/common/errors/DuplicateKeyError.error';
 import { NotFoundError } from '@lib/common/errors/not-found.error';
+import { ChallengeEvents } from '@lib/models/events/challenge-events.enum';
 import { Controller, Logger } from '@nestjs/common';
+import { CastError } from 'mongoose';
 import {
   Ctx,
   EventPattern,
@@ -10,7 +12,6 @@ import {
   RpcException,
 } from '@nestjs/microservices';
 import { ChallengesService } from './challenges.service';
-import { ChallengeEvents } from './interfaces/events/challenge-events.enum';
 import { IChallenge } from './interfaces/challenge.interface';
 
 @Controller('api/v1/challenges')
@@ -92,9 +93,13 @@ export class ChallengesController {
     } catch (error) {
       this.logger.error(`error: ${JSON.stringify(error.message)}`);
 
+      /*
       if (error instanceof NotFoundError || error instanceof BadRequestError) {
         channel.ack(originalMessage);
       }
+      */
+
+      channel.ack(originalMessage);
       throw new RpcException(error.message);
     }
   }

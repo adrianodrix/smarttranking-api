@@ -10,9 +10,9 @@ import {
 import { BadRequestError } from '@lib/common/errors/bad-request.error';
 import { DuplicateKeyError } from '@lib/common/errors/DuplicateKeyError.error';
 import { NotFoundError } from '@lib/common/errors/not-found.error';
-import { IPlayer } from './interfaces/player.interface';
 import { PlayersService } from './players.service';
 import { PlayerEvents } from './interfaces/player-events.enum';
+import { IPlayer } from '@lib/models/interfaces/player.interface';
 
 @Controller()
 export class PlayersController {

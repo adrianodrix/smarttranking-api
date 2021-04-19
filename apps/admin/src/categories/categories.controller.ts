@@ -1,5 +1,6 @@
 import { DuplicateKeyError } from '@lib/common/errors/DuplicateKeyError.error';
 import { NotFoundError } from '@lib/common/errors/not-found.error';
+import { ICategory } from '@lib/models/interfaces/category.interface';
 import { Controller, Logger } from '@nestjs/common';
 import {
   Ctx,
@@ -11,7 +12,6 @@ import {
 } from '@nestjs/microservices';
 import { CategoriesService } from './categories.service';
 import { CategoryEvents } from './interfaces/category-events.enum';
-import { ICategory } from './interfaces/category.interface';
 
 @Controller()
 export class CategoriesController {

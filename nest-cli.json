@@ -7,7 +7,7 @@
   },
   "monorepo": true,
   "root": "apps/gateway",
-  "projects": {   
+  "projects": {
     "admin": {
       "type": "application",
       "root": "apps/admin",
@@ -45,6 +45,24 @@
       "sourceRoot": "apps/challenges/src",
       "compilerOptions": {
         "tsConfigPath": "apps/challenges/tsconfig.app.json"
+      }
+    },
+    "rankings": {
+      "type": "application",
+      "root": "apps/rankings",
+      "entryFile": "main",
+      "sourceRoot": "apps/rankings/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/rankings/tsconfig.app.json"
+      }
+    },
+    "models": {
+      "type": "library",
+      "root": "libs/models",
+      "entryFile": "index",
+      "sourceRoot": "libs/models/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/models/tsconfig.lib.json"
       }
     }
   }

@@ -1,6 +1,7 @@
 import { IResult } from './result-interface';
 
-export interface IMatch {
+export interface IMatch<T = any> {
+  _id?: T;
   category: string;
   players: string[];
   def: string;

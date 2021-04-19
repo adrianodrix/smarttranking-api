@@ -1,4 +1,5 @@
 import { BadRequestError } from '@lib/common/errors/bad-request.error';
+import { IMatch } from '@lib/models/interfaces/match-interface';
 import {
   Injectable,
   InternalServerErrorException,
@@ -6,12 +7,10 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { I18nService } from 'nestjs-i18n';
 import { Challenge, ChallengeDocument } from './entities/challenge.entity';
 import { Match, MatchDocument } from './entities/match.entity';
 import { ChallengeStatus } from './interfaces/challenge-status.enum';
 import { IChallenge } from './interfaces/challenge.interface';
-import { IMatch } from './interfaces/match-interface';
 import { PlayersService } from './players.service';
 import { RankingsService } from './rankings.service';
 
@@ -21,13 +20,12 @@ export class ChallengesService {
   private readonly categoriesService: any;
 
   constructor(
-    @InjectModel(Challenge.name)
-    private readonly model: Model<ChallengeDocument>,
     @InjectModel(Match.name)
     private readonly matchModel: Model<MatchDocument>,
+    @InjectModel(Challenge.name)
+    private readonly modelChallenge: Model<ChallengeDocument>,
     private readonly playerService: PlayersService,
     private readonly rankingsService: RankingsService,
-    private readonly i18n: I18nService,
   ) {}
 
   async create(createChallengeDto: IChallenge): Promise<void> {
@@ -40,7 +38,7 @@ export class ChallengesService {
     const categoryByPlayer = await this.getCategoryByPlayer(applicant);
     this.logger.log(`categoryByPlayer: ${JSON.stringify(categoryByPlayer)}`);
 
-    const newChallenge = new this.model(createChallengeDto);
+    const newChallenge = new this.modelChallenge(createChallengeDto);
     newChallenge.category = categoryByPlayer._id;
     newChallenge.status = ChallengeStatus.PENDING;
 
@@ -50,25 +48,24 @@ export class ChallengesService {
   async findAll() {
     this.logger.log(`findAll`);
 
-    return await this.model.find().lean();
+    return await this.modelChallenge.find().lean();
   }
 
   async findById(id: string) {
-    this.logger.log(`findById: ${id}`);
-
-    return await this.model.findById(id).lean();
+    this.logger.log(`Challenge findById: ${id}`);
+    return await this.modelChallenge.findById(id).exec();
   }
 
   async update(_id: string, updateChallengeDto: IChallenge) {
     const { status, startAt } = updateChallengeDto;
 
-    return await this.model
+    return await this.modelChallenge
       .findOneAndUpdate({ _id }, { $set: { startAt, status } })
       .exec();
   }
 
   async remove(_id: string) {
-    await this.model
+    await this.modelChallenge
       .findOneAndUpdate({ _id }, { $set: { status: ChallengeStatus.CANCELED } })
       .exec();
   }
@@ -77,15 +74,28 @@ export class ChallengesService {
     this.logger.log(`getChallengesByPlayer: ${playerId}`);
 
     const playerFound = await this.playerService.findById(playerId);
-    return await this.model.find().where('players').in(playerFound._id).lean();
+    return await this.modelChallenge
+      .find()
+      .where('players')
+      .in(playerFound._id)
+      .lean();
   }
 
   async getMatchById(id: string): Promise<IMatch> {
-    return await this.matchModel.findById(id);
+    this.logger.log(`getMatchById: #${id}`);
+    return await this.matchModel.findById(id).exec();
   }
 
-  async attachMatchInAChallenge(_id: string, attachMatchChallengeDto: any) {
-    const challengeFound = await this.findById(_id);
+  async attachMatchInAChallenge(
+    challengeId: string,
+    attachMatchChallengeDto: any,
+  ) {
+    this.logger.log(
+      `attachMatchInAChallenge: #${challengeId}, data: ${JSON.stringify(
+        attachMatchChallengeDto,
+      )}`,
+    );
+    const challengeFound = await this.findById(challengeId);
     const defFound = challengeFound.players.filter(
       (player) => player['_id'] == attachMatchChallengeDto.def,
     );
@@ -101,17 +111,20 @@ export class ChallengesService {
 
     challengeFound.status = ChallengeStatus.ACHIEVED;
     challengeFound.match = resultMatch.id;
+
     try {
-      await this.model
-        .findOneAndUpdate({ _id }, { $set: challengeFound })
+      await this.modelChallenge
+        .findOneAndUpdate({ challengeId }, { $set: challengeFound })
         .exec();
+
+      this.rankingsService.processMatch(resultMatch);
     } catch (error) {
       this.logger.error(JSON.stringify(error));
       await this.matchModel.deleteOne({ _id: resultMatch.id }).exec();
       throw new InternalServerErrorException();
     } finally {
       if (oldMatch) {
-        this.matchModel.deleteOne({ _id: oldMatch.id }).exec();
+        this.matchModel.deleteOne({ _id: oldMatch }).exec();
       }
     }
   }

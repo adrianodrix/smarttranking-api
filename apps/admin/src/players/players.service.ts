@@ -6,7 +6,7 @@ import { BadRequestError } from '@lib/common/errors/bad-request.error';
 import { CreatePlayerDTO } from './dto/create-player.dto';
 import { UpdatePlayerDTO } from './dto/update-player.dto';
 import { Player, PlayerDocument } from './entities/player.entity';
-import { IPlayer } from './interfaces/player.interface';
+import { IPlayer } from '@lib/models/interfaces/player.interface';
 
 @Injectable()
 export class PlayersService {
