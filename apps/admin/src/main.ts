@@ -18,15 +18,20 @@ async function bootstrap() {
     },
   });
 
+  init();
+
+  app.listen(() =>
+    logger.log("MicroService 'MICRO-ADMIN-BACKEND' is listening"),
+  );
+}
+
+function init() {
+  logger.log('Prototypes initialized');
   Date.prototype.toJSON = function (): any {
     return momentTimeZone(this)
       .tz('America/Sao_Paulo')
       .format('YYYY-MM-DD HH:mm:ss.SSS');
   };
-
-  app.listen(() =>
-    logger.log("MicroService 'MICRO-ADMIN-BACKEND' is listening"),
-  );
 }
 
 bootstrap();
