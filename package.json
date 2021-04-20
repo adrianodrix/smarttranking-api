@@ -28,6 +28,7 @@
     "@nestjs/microservices": "^7.6.15",
     "@nestjs/mongoose": "^7.2.4",
     "@nestjs/platform-express": "^7.6.15",
+    "amazon-cognito-identity-js": "^4.6.0",
     "amqp-connection-manager": "^3.2.2",
     "amqplib": "^0.7.1",
     "aws-sdk": "^2.888.0",
