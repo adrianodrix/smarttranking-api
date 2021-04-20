@@ -4,6 +4,7 @@ import { ProxymqModule } from '@lib/common/proxymq/proxymq.module';
 import { CategoriesModule } from './categories/categories.module';
 import { PlayersModule } from './players/players.module';
 import { ChallengesModule } from './challenges/challenges.module';
+import { RankingsModule } from './rankings/rankings.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { ChallengesModule } from './challenges/challenges.module';
     CategoriesModule,
     PlayersModule,
     ChallengesModule,
+    RankingsModule,
   ],
 })
 export class AppModule {}

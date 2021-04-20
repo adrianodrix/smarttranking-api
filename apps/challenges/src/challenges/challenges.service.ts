@@ -1,5 +1,7 @@
 import { BadRequestError } from '@lib/common/errors/bad-request.error';
+import { IChallenge } from '@lib/models/interfaces/challenge.interface';
 import { IMatch } from '@lib/models/interfaces/match-interface';
+import { ChallengeStatus } from '@lib/models/status/challenge-status.enum';
 import {
   Injectable,
   InternalServerErrorException,
@@ -9,10 +11,9 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Challenge, ChallengeDocument } from './entities/challenge.entity';
 import { Match, MatchDocument } from './entities/match.entity';
-import { ChallengeStatus } from './interfaces/challenge-status.enum';
-import { IChallenge } from './interfaces/challenge.interface';
 import { PlayersService } from './players.service';
 import { RankingsService } from './rankings.service';
+import * as momentTimeZone from 'moment-timezone';
 
 @Injectable()
 export class ChallengesService {
@@ -107,14 +108,16 @@ export class ChallengesService {
     const newMatch = new this.matchModel(attachMatchChallengeDto);
     newMatch.category = challengeFound.category;
     newMatch.players = challengeFound.players;
+    newMatch.challenge = challengeFound._id;
     const resultMatch = await newMatch.save();
 
     challengeFound.status = ChallengeStatus.ACHIEVED;
     challengeFound.match = resultMatch.id;
 
     try {
+      this.logger.log(`challengeFound: ${JSON.stringify(challengeFound)}`);
       await this.modelChallenge
-        .findOneAndUpdate({ challengeId }, { $set: challengeFound })
+        .findOneAndUpdate({ _id: challengeId }, { $set: challengeFound })
         .exec();
 
       this.rankingsService.processMatch(resultMatch);
@@ -129,6 +132,44 @@ export class ChallengesService {
     }
   }
 
+  async getChallengesByDateRef(
+    categoryId: string,
+    dateRef: string,
+  ): Promise<IChallenge[]> {
+    this.logger.log(
+      `getChallengesByDateRef: categoryId ${categoryId}, dateRef ${dateRef} `,
+    );
+    const dateRefNew = `${dateRef} 23:59:59.999`;
+    const dateFormated: number = momentTimeZone(dateRefNew)
+      .tz('UTC')
+      .toDate()
+      .getTime();
+
+    this.logger.log(`dateFormated: ${dateFormated.toLocaleString()}`);
+
+    return await this.modelChallenge
+      .find()
+      .where('category')
+      .equals(categoryId)
+      .where('status')
+      .equals(ChallengeStatus.ACHIEVED)
+      .where('startAt')
+      .lte(dateFormated)
+      .exec();
+  }
+
+  async getChallengesByCategoryWithStatusRealized(
+    categoryId: string,
+  ): Promise<IChallenge[]> {
+    this.logger.log(`getChallengesByCategoryWithStatusRealized: ${categoryId}`);
+    return await this.modelChallenge
+      .find()
+      .where('category')
+      .equals(categoryId)
+      .where('status')
+      .equals(ChallengeStatus.ACHIEVED)
+      .exec();
+  }
   private async playersExists(players: string[]): Promise<void> {
     this.logger.log(`playersExists: ${JSON.stringify(players)}`);
 

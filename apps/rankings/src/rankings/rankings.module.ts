@@ -7,6 +7,7 @@ import { CommonModule } from '@lib/common';
 import { ConfigService } from '@nestjs/config';
 import { CategoriesService } from './categories.service';
 import { ClientProxySmartRanking } from '@lib/common/proxymq/client-proxy';
+import { ChallengesService } from './challenges.service';
 
 const configService: ConfigService = new ConfigService();
 
@@ -22,6 +23,11 @@ const configService: ConfigService = new ConfigService();
     MongooseModule.forFeature([{ name: Ranking.name, schema: RankingSchema }]),
   ],
   controllers: [RankingsController],
-  providers: [ClientProxySmartRanking, RankingsService, CategoriesService],
+  providers: [
+    ClientProxySmartRanking,
+    RankingsService,
+    CategoriesService,
+    ChallengesService,
+  ],
 })
 export class RankingsModule {}

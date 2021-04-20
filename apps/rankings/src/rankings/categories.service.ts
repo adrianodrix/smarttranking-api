@@ -15,6 +15,7 @@ export class CategoriesService {
   }
 
   async findById(id: string): Promise<any> {
+    this.logger.log(`findById: #${id}`);
     return await this.clientAdminBackend
       .send(CategoryEvents.FIND, id)
       .toPromise();

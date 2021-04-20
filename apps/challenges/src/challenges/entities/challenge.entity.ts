@@ -1,8 +1,7 @@
+import { IChallenge } from '@lib/models/interfaces/challenge.interface';
+import { ChallengeStatus } from '@lib/models/status/challenge-status.enum';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import * as mongoose from 'mongoose';
-import { ChallengeStatus } from '../interfaces/challenge-status.enum';
-import { IChallenge } from '../interfaces/challenge.interface';
-import { MatchDocument } from './match.entity';
 
 @Schema({ timestamps: true })
 export class Challenge implements IChallenge {

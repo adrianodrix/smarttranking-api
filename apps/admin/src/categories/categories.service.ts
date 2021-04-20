@@ -88,11 +88,7 @@ export class CategoriesService {
   }
 
   async getCategoryByPlayer(playerId: any): Promise<CategoryDocument> {
-    await this.playerService.findById(playerId);
-    return await this.categoryModel
-      .findOne()
-      .where('players')
-      .in(playerId)
-      .exec();
+    const playerFound = await this.playerService.findById(playerId);
+    return await this.categoryModel.findById(playerFound.category).exec();
   }
 }

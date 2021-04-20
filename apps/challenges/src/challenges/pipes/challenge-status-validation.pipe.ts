@@ -1,3 +1,4 @@
+import { ChallengeStatus } from '@lib/models/status/challenge-status.enum';
 import {
   ArgumentMetadata,
   BadRequestException,
@@ -5,7 +6,6 @@ import {
   Logger,
   PipeTransform,
 } from '@nestjs/common';
-import { ChallengeStatus } from '../interfaces/challenge-status.enum';
 
 @Injectable()
 export class ChallengeStatusValidationPipe implements PipeTransform {

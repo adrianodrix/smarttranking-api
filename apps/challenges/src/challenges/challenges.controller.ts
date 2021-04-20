@@ -2,8 +2,9 @@ import { BadRequestError } from '@lib/common/errors/bad-request.error';
 import { DuplicateKeyError } from '@lib/common/errors/DuplicateKeyError.error';
 import { NotFoundError } from '@lib/common/errors/not-found.error';
 import { ChallengeEvents } from '@lib/models/events/challenge-events.enum';
+import { IChallenge } from '@lib/models/interfaces/challenge.interface';
 import { Controller, Logger } from '@nestjs/common';
-import { CastError } from 'mongoose';
+
 import {
   Ctx,
   EventPattern,
@@ -12,7 +13,6 @@ import {
   RpcException,
 } from '@nestjs/microservices';
 import { ChallengesService } from './challenges.service';
-import { IChallenge } from './interfaces/challenge.interface';
 
 @Controller('api/v1/challenges')
 export class ChallengesController {
@@ -54,7 +54,7 @@ export class ChallengesController {
     const originalMessage = context.getMessage();
 
     try {
-      const { id, playerId, matchId } = data;
+      const { id, playerId, matchId, categoryId, dateRef } = data;
 
       if (id) {
         return await this.service.findById(id);
@@ -66,6 +66,16 @@ export class ChallengesController {
 
       if (matchId) {
         return await this.service.getMatchById(matchId);
+      }
+
+      if (categoryId && !dateRef) {
+        return await this.service.getChallengesByCategoryWithStatusRealized(
+          categoryId,
+        );
+      }
+
+      if (categoryId && dateRef) {
+        return await this.service.getChallengesByDateRef(categoryId, dateRef);
       }
 
       return await this.service.findAll();

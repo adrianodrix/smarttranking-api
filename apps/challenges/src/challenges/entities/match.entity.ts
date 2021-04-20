@@ -5,8 +5,11 @@ import * as mongoose from 'mongoose';
 
 @Schema({ timestamps: true })
 export class Match implements IMatch {
-  @Prop()
+  @Prop({ type: mongoose.Schema.Types.ObjectId })
   category: string;
+
+  @Prop({ type: mongoose.Schema.Types.ObjectId })
+  challenge: string;
 
   @Prop([
     {
