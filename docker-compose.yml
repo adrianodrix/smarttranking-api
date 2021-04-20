@@ -35,3 +35,11 @@ services:
     command: bash -c "npm i -g @nestjs/cli &&  yarn install && yarn start rankings  --watch"
     volumes:
       - ./:/usr/src/rankings/
+  notifications:
+    container_name: micro-notifications
+    image: node:15
+    working_dir: /usr/src/notifications
+    restart: always
+    command: bash -c "npm i -g @nestjs/cli &&  yarn install && yarn start notifications  --watch"
+    volumes:
+      - ./:/usr/src/notifications/

@@ -12,6 +12,7 @@ export class ClientProxySmartRanking {
   private proxyAdminBackend: ClientProxy;
   private proxyChallengeBackend: ClientProxy;
   private proxyRankingsBackend: ClientProxy;
+  private proxyNotificationsBackend: ClientProxy;
 
   constructor(private readonly configs: ConfigService) {}
 
@@ -34,6 +35,15 @@ export class ClientProxySmartRanking {
       this.proxyRankingsBackend = this.createProxy('rankings-backend');
     }
     return this.proxyRankingsBackend;
+  }
+
+  getClientProxyNotificationsBackendInstance(): ClientProxy {
+    if (!this.proxyNotificationsBackend) {
+      this.proxyNotificationsBackend = this.createProxy(
+        'notifications-backend',
+      );
+    }
+    return this.proxyNotificationsBackend;
   }
 
   private createProxy(queue: string): ClientProxy {

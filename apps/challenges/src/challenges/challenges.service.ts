@@ -14,6 +14,7 @@ import { Match, MatchDocument } from './entities/match.entity';
 import { PlayersService } from './players.service';
 import { RankingsService } from './rankings.service';
 import * as momentTimeZone from 'moment-timezone';
+import { NotificationsService } from './notifications.service';
 
 @Injectable()
 export class ChallengesService {
@@ -27,6 +28,7 @@ export class ChallengesService {
     private readonly modelChallenge: Model<ChallengeDocument>,
     private readonly playerService: PlayersService,
     private readonly rankingsService: RankingsService,
+    private readonly notifyService: NotificationsService,
   ) {}
 
   async create(createChallengeDto: IChallenge): Promise<void> {
@@ -44,6 +46,7 @@ export class ChallengesService {
     newChallenge.status = ChallengeStatus.PENDING;
 
     await newChallenge.save();
+    this.notifyService.notifyChallenge(newChallenge);
   }
 
   async findAll() {

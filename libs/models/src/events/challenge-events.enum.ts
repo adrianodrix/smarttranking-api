@@ -3,4 +3,5 @@ export enum ChallengeEvents {
   FIND = 'find-challenges',
   UPDATE = 'update-challenge',
   DELETE = 'delete-challenge',
+  NOTIFY = 'notify-challenge',
 }

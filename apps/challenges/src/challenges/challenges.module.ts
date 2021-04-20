@@ -6,6 +6,7 @@ import { Challenge, ChallengeSchema } from './entities/challenge.entity';
 import { Match, MatchSchema } from './entities/match.entity';
 import { PlayersService } from './players.service';
 import { RankingsService } from './rankings.service';
+import { NotificationsService } from './notifications.service';
 import { ProxymqModule } from '@lib/common/proxymq/proxymq.module';
 
 @Module({
@@ -17,6 +18,11 @@ import { ProxymqModule } from '@lib/common/proxymq/proxymq.module';
     ]),
   ],
   controllers: [ChallengesController],
-  providers: [ChallengesService, PlayersService, RankingsService],
+  providers: [
+    ChallengesService,
+    PlayersService,
+    RankingsService,
+    NotificationsService,
+  ],
 })
 export class ChallengesModule {}
