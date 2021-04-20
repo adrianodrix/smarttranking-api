@@ -8,10 +8,12 @@ import {
   Param,
   Patch,
   Post,
+  Req,
   UploadedFile,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { Express } from 'express';
+import { Express, Request } from 'express';
 import { CreatePlayerDTO } from './dto/create-player.dto';
 import { UpdatePlayerDTO } from './dto/update-player.dto';
 import { ClientProxy } from '@nestjs/microservices';
@@ -25,6 +27,7 @@ import { AWSService } from '@lib/common/aws/aws.service';
 import { CategoryEvents } from '../categories/interfaces/category-events.enum';
 import { IdValidationParamsPipe } from '@lib/common/pipes/id-validation-params.pipe';
 import { ValidationParamsPipe } from '@lib/common/pipes/validation-params.pipe';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('api/v1/players')
 export class PlayersController {
@@ -103,7 +106,8 @@ export class PlayersController {
   }
 
   @Get()
-  findAll(): Observable<any> {
+  findAll(@Req() req: Request): Observable<any> {
+    this.logger.log(`req: ${JSON.stringify(req.user)}`);
     return this.clientAdminBackend.send(PlayerEvents.FIND, '');
   }
 
