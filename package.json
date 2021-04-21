@@ -6,8 +6,10 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
+    "copy": "cp package.json dist/ && cp yarn.lock dist/",
     "prebuild": "rimraf dist",
     "build": "nest build",
+    "postbuild": "yarn copy",
     "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
