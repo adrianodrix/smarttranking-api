@@ -1,8 +1,8 @@
 {
   "name": "api",
-  "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "version": "0.0.2",
+  "description": "Microservices em Node.js: NestJS, TypeScript, RabbitMQ, etc",
+  "author": "Adriano Santos <adrianodrix@gmail.com>",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
