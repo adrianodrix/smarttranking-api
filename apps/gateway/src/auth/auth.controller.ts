@@ -18,7 +18,11 @@ export class AuthController {
   @IsPublic()
   async login(@Body() authLoginUserDto: AuthLoginUserDto) {
     try {
-      return await this.service.login(authLoginUserDto);
+      const result: any = await this.service.login(authLoginUserDto);
+      return {
+        log: 'release testing 001',
+        ...result,
+      };
     } catch (error) {
       throw new UnauthorizedException(error);
     }
