@@ -24,3 +24,10 @@ jobs:
 
       - name: Install dependencies
         run: yarn --frozen-lockfile
+
+      - name: Build API Gateway
+        run: yarn build gateway
+
+      - name: Build Libraries
+        run: nest build common && nest build models  
+
