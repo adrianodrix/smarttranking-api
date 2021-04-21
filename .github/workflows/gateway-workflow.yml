@@ -3,24 +3,25 @@
 
 name: Deploy to Cloud Foundry (API Gateway)
 
-on: ['push', 'pull_request']
+on:
+  push:
+    branches:
+      - main
+env:
+  NODE_VERSION: '12.x'
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [12.x]
-
     steps:
       - uses: actions/checkout@v2
       - run: git fetch --prune --unshallow
 
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+      - name: Use Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v2
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: ${{ env.NODE_VERSION }}
 
       - name: Install NestJS
         run: npm install -g @nestjs/cli
