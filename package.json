@@ -1,14 +1,16 @@
 {
   "name": "api",
-  "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "version": "0.0.2",
+  "description": "Microservices em Node.js: NestJS, TypeScript, RabbitMQ, etc",
+  "author": "Adriano Santos <adrianodrix@gmail.com>",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
+    "copy": "cp package.json dist/ && cp yarn.lock dist/",
     "prebuild": "rimraf dist",
     "build": "nest build",
-    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "postbuild": "yarn copy",
+    "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
@@ -18,15 +20,35 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./apps/api/test/jest-e2e.json"
   },
   "dependencies": {
     "@nestjs/common": "^7.6.15",
+    "@nestjs/config": "^0.6.3",
     "@nestjs/core": "^7.6.15",
+    "@nestjs/mapped-types": "*",
+    "@nestjs/microservices": "^7.6.15",
+    "@nestjs/mongoose": "^7.2.4",
+    "@nestjs/passport": "^7.1.5",
     "@nestjs/platform-express": "^7.6.15",
+    "amazon-cognito-identity-js": "^4.6.0",
+    "amqp-connection-manager": "^3.2.2",
+    "amqplib": "^0.7.1",
+    "aws-sdk": "^2.888.0",
+    "class-transformer": "^0.4.0",
+    "class-validator": "^0.13.1",
+    "class-validator-multi-lang": "^0.130.100",
+    "jwks-rsa": "^2.0.2",
+    "lodash": "^4.17.21",
+    "moment-timezone": "^0.5.33",
+    "mongoose": "^5.12.3",
+    "nestjs-i18n": "^8.0.11",
+    "passport": "^0.4.1",
+    "passport-jwt": "^4.0.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
-    "rxjs": "^6.6.6"
+    "rxjs": "^6.6.6",
+    "uui": "^1.0.7"
   },
   "devDependencies": {
     "@nestjs/cli": "^7.6.0",
@@ -34,8 +56,12 @@
     "@nestjs/testing": "^7.6.15",
     "@types/express": "^4.17.11",
     "@types/jest": "^26.0.22",
+    "@types/lodash": "^4.14.168",
+    "@types/multer": "^1.4.5",
     "@types/node": "^14.14.36",
+    "@types/passport-jwt": "^3.0.5",
     "@types/supertest": "^2.0.10",
+    "@types/uuid": "^8.3.0",
     "@typescript-eslint/eslint-plugin": "^4.19.0",
     "@typescript-eslint/parser": "^4.19.0",
     "eslint": "^7.22.0",
@@ -56,7 +82,7 @@
       "json",
       "ts"
     ],
-    "rootDir": "src",
+    "rootDir": ".",
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
@@ -64,7 +90,17 @@
     "collectCoverageFrom": [
       "**/*.(t|j)s"
     ],
-    "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "coverageDirectory": "./coverage",
+    "testEnvironment": "node",
+    "roots": [
+      "<rootDir>/apps/",
+      "<rootDir>/libs/"
+    ],
+    "moduleNameMapper": {
+      "@common/common/(.*)": "<rootDir>/libs/common/src/$1",
+      "@common/common": "<rootDir>/libs/common/src",
+      "@models/models/(.*)": "<rootDir>/libs/models/src/$1",
+      "@models/models": "<rootDir>/libs/models/src"
+    }
   }
 }

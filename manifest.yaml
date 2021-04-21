@@ -1,0 +1,41 @@
+---
+applications:
+      - name: adrianodrix-smartranking-api-gateway
+        path: dist
+        instances: 3
+        memory: 128MB
+        disk_quota: 1GB
+        command: node apps/gateway/main
+        health-check-type: none
+      - name: adrianodrix-smartranking-admin-backend
+        path: dist
+        instances: 1
+        memory: 128MB
+        disk_quota: 1GB
+        command: node apps/admin/main
+        health-check-type: none
+        no-route: true
+      - name: adrianodrix-smartranking-challenges-backend
+        path: dist
+        instances: 1
+        memory: 128MB
+        disk_quota: 1GB
+        command: node apps/challenges/main
+        health-check-type: none
+        no-route: true  
+      - name: adrianodrix-smartranking-notifications-backend
+        path: dist
+        instances: 1
+        memory: 128MB
+        disk_quota: 1GB
+        command: node apps/notifications/main
+        health-check-type: none
+        no-route: true   
+      - name: adrianodrix-smartranking-rankings-backend
+        path: dist
+        instances: 2
+        memory: 128MB
+        disk_quota: 1GB
+        command: node apps/rankings/main
+        health-check-type: none
+        no-route: true      

@@ -1,0 +1,45 @@
+version: '3'
+
+services:
+  gateway:
+    container_name: app-gateway
+    image: node:15
+    working_dir: /usr/src/gateway
+    restart: always
+    command: bash -c "npm i -g @nestjs/cli &&  yarn install && yarn start gateway --watch"
+    volumes:
+      - ./:/usr/src/gateway/
+    ports:
+      - '8080:8080'
+  admin:
+    container_name: micro-admin
+    image: node:15
+    working_dir: /usr/src/admin
+    restart: always
+    command: bash -c "npm i -g @nestjs/cli &&  yarn install && yarn start admin  --watch"
+    volumes:
+      - ./:/usr/src/admin/
+  challenges:
+    container_name: micro-challenges
+    image: node:15
+    working_dir: /usr/src/challenges
+    restart: always
+    command: bash -c "npm i -g @nestjs/cli &&  yarn install && yarn start challenges  --watch"
+    volumes:
+      - ./:/usr/src/challenges/
+  rankings:
+    container_name: micro-rankings
+    image: node:15
+    working_dir: /usr/src/rankings
+    restart: always
+    command: bash -c "npm i -g @nestjs/cli &&  yarn install && yarn start rankings  --watch"
+    volumes:
+      - ./:/usr/src/rankings/
+  notifications:
+    container_name: micro-notifications
+    image: node:15
+    working_dir: /usr/src/notifications
+    restart: always
+    command: bash -c "npm i -g @nestjs/cli &&  yarn install && yarn start notifications  --watch"
+    volumes:
+      - ./:/usr/src/notifications/
