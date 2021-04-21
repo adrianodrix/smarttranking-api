@@ -35,16 +35,13 @@ jobs:
       - name: Build Libraries
         run: nest build common && nest build models  
 
-  deploy:
-      runs-on: ubuntu-latest
-      needs: build
-
-      steps:
-      - uses: citizen-of-planet-earth/cf-cli-action@master
+      - name: Deploy      
+        uses: citizen-of-planet-earth/cf-cli-action@master
         with:
           cf_api: https://api.cf.us10.hana.ondemand.com
           cf_username: ${{ secrets.CF_USER }}
           cf_password: ${{ secrets.CF_PASSWORD }}
           cf_org: ${{ secrets.CF_ORG }}
           cf_space: dev
-          command: push adrianodrix-smartranking-api-gateway
+          command: push adrianodrix-smartranking-api-gateway  
+      
