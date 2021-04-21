@@ -46,5 +46,5 @@ jobs:
           cf_username: ${{ secrets.CF_USER }}
           cf_password: ${{ secrets.CF_PASSWORD }}
           cf_org: ${{ secrets.CF_ORG }}
-          cf_space: trial
+          cf_space: dev
           command: push adrianodrix-smartranking-api-gateway
